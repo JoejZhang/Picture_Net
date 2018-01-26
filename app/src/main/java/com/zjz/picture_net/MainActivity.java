@@ -112,8 +112,6 @@ public class MainActivity extends BaseActivity {
                         nextString = element.select("a[href]:has([src])").get(1).toString();
                     }
 
-
-
                     int begin = imgString.indexOf("+\"");
                     int end = imgString.indexOf("jpg");
 
