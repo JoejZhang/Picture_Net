@@ -12,10 +12,34 @@
         android:id="@+id/tv_show"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/btn_get"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:text="获取"
-        android:layout_height="50dp"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btn_get"
+            android:layout_width="100dp"
+            android:text="获取"
+            android:layout_height="50dp"/>
+        <Button
+            android:id="@+id/btn_previous"
+            android:layout_width="100dp"
+            android:text="上一页"
+            android:layout_height="50dp"/>
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="100dp"
+            android:text="下一页"
+            android:layout_height="50dp"/>
+    </LinearLayout>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/iv_main"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"/>
+
+    </ScrollView>
 </LinearLayout>

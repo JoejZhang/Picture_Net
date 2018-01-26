@@ -1,9 +1,12 @@
 package com.zjz.picture_net;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.zjz.picture_net.base.BaseActivity;
 
 import org.jsoup.Connection;
@@ -25,6 +28,15 @@ public class MainActivity extends BaseActivity {
     TextView mTvShow;
     @BindView(R.id.btn_get)
     Button mBtnGet;
+    @BindView(R.id.iv_main)
+    ImageView mIvMain;
+    @BindView(R.id.btn_next)
+    Button mBtnNext;
+    @BindView(R.id.btn_previous)
+    Button mBtnPrevious;
+
+    private String mNextUrl;
+    private String mPreviousUrl;
 
     @Override
     protected int setLayoutResId() {
@@ -50,38 +62,81 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    @OnClick(R.id.btn_get)
-    public void onViewClicked() {
-        showToast("haha");
+    @OnClick({R.id.btn_get, R.id.btn_next, R.id.btn_previous})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_get:
+                String url1 = "http://comic.kukudm.com/comiclist/5/3443/1.htm";
+                String url2 = "http://comic.kukudm.com/comiclist/3/56260/7.htm";
+                showPicture(url1);
+                break;
+            case R.id.btn_previous:
+                showPicture(mPreviousUrl);
+                break;
+            case R.id.btn_next:
+                showPicture(mNextUrl);
+                break;
+
+        }
+    }
+
+
+    private void showPicture(final String url) {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Document doc = null;
+                Document doc;
                 try {
 
-                    Connection conn = Jsoup.connect("http://comic.kukudm.com/comiclist/3/56260/7.htm");
+
+
+                    Connection conn = Jsoup.connect(url);
                     conn.header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/    20100101 Firefox/32.0");
 
                     doc = conn.get();
                     Elements elements = doc.select("tbody tr");
-                    final StringBuilder imgUrl = new StringBuilder();
 
-                    String url;
-                    for (Element element : elements) {
-                        imgUrl.append(element.select("script:not([src])").toString());
+                    String imgString ;
+                    String previousString ="";
+                    String nextString ;
 
+
+                    Element element = elements.get(1);
+                    imgString = element.select("script:not([src])").toString();
+                    if (element.select("a[href]:has([src])").size() == 1) {
+                        nextString = element.select("a[href]:has([src])").toString();
+                       mPreviousUrl = "";
+                    } else {
+                        previousString =element.select("a[href]:has([src])").get(0).toString();
+                        nextString = element.select("a[href]:has([src])").get(1).toString();
                     }
 
-                    url = imgUrl.toString();
-                    int begin = url.indexOf("new");
-                    int end = url.indexOf("jpg");
 
-                    final String text1 = url.substring(begin, end + 3);
+                    int begin = imgString.indexOf("+\"");
+                    int end = imgString.indexOf("jpg");
+
+                    int begin1 = nextString.indexOf("\"");
+                    int end1 = nextString.indexOf("htm");
+
+                    final String httpImgUrl = "http://n.1whour.com/" + imgString.substring(begin + 2, end + 3);//图片的地址
+
+                    if(!previousString.equals("")){
+                        mPreviousUrl = "http://comic.kukudm.com" + previousString.substring(begin1 + 1, end1 + 3);//上一页的地址
+                    }
+                    mNextUrl = "http://comic.kukudm.com" + nextString.substring(begin1 + 1, end1 + 3);//下一页的地址
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mTvShow.setText(text1);
+                            if(mPreviousUrl.equals("")){
+                                mBtnPrevious.setVisibility(View.GONE);
+                            }
+                            else{
+                                mBtnPrevious.setVisibility(View.VISIBLE);
+                            }
+                            Glide.with(getBaseContext()).load(httpImgUrl).into(mIvMain);//显示图片
+                        //    mTvShow.setText(httpImgUrl + "\n" + mNextUrl + "\n");
                         }
                     });
 
@@ -90,7 +145,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }).start();
-
 
     }
 }
