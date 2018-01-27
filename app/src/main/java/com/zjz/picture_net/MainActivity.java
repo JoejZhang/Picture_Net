@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zjz.picture_net.base.BaseActivity;
+import com.zjz.picture_net.constant.Constant;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -16,6 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +40,8 @@ public class MainActivity extends BaseActivity {
     private String mNextUrl;
     private String mPreviousUrl;
 
+    private ArrayList<String> userAgentList ;
+
     @Override
     protected int setLayoutResId() {
         return R.layout.activity_main;
@@ -47,6 +51,7 @@ public class MainActivity extends BaseActivity {
     protected void initData() {
 
     }
+
 
     @Override
     protected void initView() {
@@ -67,8 +72,9 @@ public class MainActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.btn_get:
                 String url1 = "http://comic.kukudm.com/comiclist/5/3443/1.htm";
-                String url2 = "http://comic.kukudm.com/comiclist/3/56260/7.htm";
-                showPicture(url1);
+                String url2 = "http://www.1kkk.com/ch1-428844-p31/";
+                String url3 = "http://comic.kukudm.com/index.htm";
+                showPicture(url3);
                 break;
             case R.id.btn_previous:
                 showPicture(mPreviousUrl);
@@ -91,11 +97,13 @@ public class MainActivity extends BaseActivity {
 
 
 
+
                     Connection conn = Jsoup.connect(url);
-                    conn.header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/    20100101 Firefox/32.0");
+                    conn.header("User-Agent", getUserAgentString());
 
                     doc = conn.get();
                     Elements elements = doc.select("tbody tr");
+
 
                     String imgString ;
                     String previousString ="";
@@ -145,5 +153,23 @@ public class MainActivity extends BaseActivity {
             }
         }).start();
 
+    }
+
+    //获取不同用户代理伪装浏览器
+    private String getUserAgentString() {
+        if(userAgentList == null){
+            userAgentList = new ArrayList<>();
+            userAgentList.add(Constant.BROWSER_0);
+            userAgentList.add(Constant.BROWSER_1);
+            userAgentList.add(Constant.BROWSER_2);
+            userAgentList.add(Constant.BROWSER_3);
+            userAgentList.add(Constant.BROWSER_4);
+            userAgentList.add(Constant.BROWSER_5);
+            userAgentList.add(Constant.BROWSER_6);
+            userAgentList.add(Constant.BROWSER_7);
+        }
+
+        int num =   (int) (Math.random()*7);//产生随机数
+        return userAgentList.get(num);
     }
 }
