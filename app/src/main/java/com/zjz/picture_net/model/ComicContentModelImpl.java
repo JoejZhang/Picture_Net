@@ -2,6 +2,7 @@ package com.zjz.picture_net.model;
 
 import android.view.View;
 
+import com.zjz.picture_net.constant.Constant;
 import com.zjz.picture_net.contract.IComicContentContract;
 import com.zjz.picture_net.utils.HttpUtils;
 
@@ -43,10 +44,10 @@ public class ComicContentModelImpl implements IComicContentContract.Model {
                         Element element = elements.get(1);
                         imgString = element.select("script:not([src])").toString();
                         if (element.select("a[href]:has([src])").size() == 1) {
-                            nextUrl = element.select("a[href]:has([src])").first().attr("href");
+                            nextUrl = Constant.KUKU_URL+element.select("a[href]:has([src])").first().attr("href");
                         } else {
                             //previousString = element.select("a[href]:has([src])").get(0).toString();
-                            nextUrl = element.select("a[href]:has([src])").get(1).attr("href");
+                            nextUrl = Constant.KUKU_URL+ element.select("a[href]:has([src])").get(1).attr("href");
                             if (nextUrl.contains("exit")) {
                                 nextUrl = "";//结束的标志
                             }
