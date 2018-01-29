@@ -8,6 +8,7 @@ public class ComicInfo {
 
     private String name;
     private String imgUrl;
+    private String contentUrl;
 
     public String getName() {
         return name;
@@ -23,5 +24,13 @@ public class ComicInfo {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public String getContentUrl() {
+        return contentUrl;
+    }
+
+    public void setContentUrl(String contentUrl) {
+        this.contentUrl = contentUrl;
     }
 }

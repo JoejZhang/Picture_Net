@@ -1,14 +1,19 @@
 package com.zjz.picture_net;
 
-import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.zjz.picture_net.adapter.MainComicRvAdapter;
 import com.zjz.picture_net.base.BaseActivity;
-import com.zjz.picture_net.constant.Constant;
+import com.zjz.picture_net.contract.IMainContract;
+import com.zjz.picture_net.entity.ComicInfo;
+import com.zjz.picture_net.listener.OnClickRecyclerViewListener;
+import com.zjz.picture_net.presenter.MainPresenterImpl;
+import com.zjz.picture_net.ui.ComicCatalogActivity;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -20,10 +25,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity  implements OnClickRecyclerViewListener , IMainContract.View{
 
 
     @BindView(R.id.tv_show)
@@ -34,13 +38,17 @@ public class MainActivity extends BaseActivity {
     Button mBtnNext;
     @BindView(R.id.btn_previous)
     Button mBtnPrevious;
-    @BindView(R.id.sd_main)
-    SimpleDraweeView mSdMain;
+    @BindView(R.id.rv_main_comic)
+    RecyclerView mRvMainComic;
 
     private String mNextUrl;
     private String mPreviousUrl;
 
-    private ArrayList<String> userAgentList;
+    private MainComicRvAdapter mMainComicRvAdapter;
+
+    private  ArrayList<ComicInfo> mComicInfoArrayList = new ArrayList<>();//漫画目录
+
+    private MainPresenterImpl mMainPresenter;
 
     @Override
     protected int setLayoutResId() {
@@ -49,36 +57,43 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        mMainPresenter = new MainPresenterImpl(this,this);
     }
 
 
     @Override
     protected void initView() {
-
+        mMainComicRvAdapter = new MainComicRvAdapter();
+        mMainComicRvAdapter.setOnRecyclerViewListener(this);
+        mRvMainComic.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mRvMainComic.setItemAnimator(new DefaultItemAnimator());
+        mRvMainComic.setAdapter(mMainComicRvAdapter);
     }
 
+    @Override
+    public void onShowComicListSucceed(ArrayList<ComicInfo> comicInfoArrayList) {//成功后回调
+        mComicInfoArrayList = comicInfoArrayList;
+        mMainComicRvAdapter.updateData(mComicInfoArrayList);
+    }
 
+    @Override
+    public void onShowComicListFailed(String reason) {
+        showToast(reason);
+    }
 
-    @OnClick({R.id.btn_get, R.id.btn_next, R.id.btn_previous , R.id.sd_main})
+    @OnClick({R.id.btn_get, R.id.btn_next, R.id.btn_previous})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_get:
-                String url1 = "http://comic.kukudm.com/comiclist/5/3443/1.htm";
-                String url2 = "http://www.1kkk.com/ch1-428844-p31/";
-                String url3 = "http://comic.kukudm.com/index.htm";
-                String url4 = "http://comic.kukudm.com/";
-                showHome(url4);
-                //    showPicture(url3);
+
+                mMainPresenter.showComicList("http://comic.kukudm.com/");
+
                 break;
             case R.id.btn_previous:
-                showPicture(mPreviousUrl);
+
                 break;
             case R.id.btn_next:
                 showPicture(mNextUrl);
-                break;
-            case R.id.sd_main:
-
                 break;
             default:
                 break;
@@ -86,72 +101,17 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-
-    private void showHome(final String url) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Document doc;
-                try {
-
-                    Connection conn = Jsoup.connect(url);
-                    conn.header("User-Agent", getUserAgentString());
-
-                    doc = conn.get();
-                    Elements elements = doc.select("tbody tr td dl");
-
-                    Elements elementPictures = elements.get(1).select("dd");
-
-                 //   for (int )
-
-                    String imgString;
-                    String previousString = "";
-                    String nextString;
-
-
-                    Element element = elements.get(1);
-                    imgString = element.select("script:not([src])").toString();
-                    if (element.select("a[href]:has([src])").size() == 1) {
-                        nextString = element.select("a[href]:has([src])").toString();
-                        mPreviousUrl = "";
-                    } else {
-                        previousString = element.select("a[href]:has([src])").get(0).toString();
-                        nextString = element.select("a[href]:has([src])").get(1).toString();
-                    }
-
-                    int begin = imgString.indexOf("+\"");
-                    int end = imgString.indexOf("jpg");
-
-                    int begin1 = nextString.indexOf("\"");
-                    int end1 = nextString.indexOf("htm");
-
-                    final String httpImgUrl = "http://n.1whour.com/" + imgString.substring(begin + 2, end + 3);//图片的地址
-
-                    if (!previousString.equals("")) {
-                        mPreviousUrl = "http://comic.kukudm.com" + previousString.substring(begin1 + 1, end1 + 3);//上一页的地址
-                    }
-                    mNextUrl = "http://comic.kukudm.com" + nextString.substring(begin1 + 1, end1 + 3);//下一页的地址
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mPreviousUrl.equals("")) {
-                                mBtnPrevious.setVisibility(View.GONE);
-                            } else {
-                                mBtnPrevious.setVisibility(View.VISIBLE);
-                            }
-                         //   Glide.with(getBaseContext()).load(httpImgUrl).into(mIvMain);//显示图片
-                            //    mTvShow.setText(httpImgUrl + "\n" + mNextUrl + "\n");
-                        }
-                    });
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
+    @Override
+    public void onItemClick(int position) {
+       ComicCatalogActivity.gotoActivityByUrl(this,mComicInfoArrayList.get(position).getContentUrl()); //点击跳转
     }
+
+    @Override
+    public boolean onItemLongClick(int position) {
+        return false;
+    }
+
+
 
     private void showPicture(final String url) {
 
@@ -162,7 +122,7 @@ public class MainActivity extends BaseActivity {
                 try {
 
                     Connection conn = Jsoup.connect(url);
-                    conn.header("User-Agent", getUserAgentString());
+                    //conn.header("User-Agent", getUserAgentString());
 
                     doc = conn.get();
                     Elements elements = doc.select("tbody tr");
@@ -204,7 +164,7 @@ public class MainActivity extends BaseActivity {
                             } else {
                                 mBtnPrevious.setVisibility(View.VISIBLE);
                             }
-                 //           Glide.with(getBaseContext()).load(httpImgUrl).into(mIvMain);//显示图片
+                            //           Glide.with(getBaseContext()).load(httpImgUrl).into(mIvMain);//显示图片
                             //    mTvShow.setText(httpImgUrl + "\n" + mNextUrl + "\n");
                         }
                     });
@@ -217,25 +177,11 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    //获取不同用户代理伪装浏览器
-    private String getUserAgentString() {
-        if (userAgentList == null) {
-            userAgentList = new ArrayList<>();
-            userAgentList.add(Constant.BROWSER_0);
-            userAgentList.add(Constant.BROWSER_1);
-            userAgentList.add(Constant.BROWSER_2);
-            userAgentList.add(Constant.BROWSER_3);
-            userAgentList.add(Constant.BROWSER_4);
-            userAgentList.add(Constant.BROWSER_5);
-            userAgentList.add(Constant.BROWSER_6);
-            userAgentList.add(Constant.BROWSER_7);
-        }
 
-        int num = (int) (Math.random() * 7);//产生随机数
-        return userAgentList.get(num);
-    }
 
     @OnClick()
     public void onViewClicked() {
     }
+
+
 }

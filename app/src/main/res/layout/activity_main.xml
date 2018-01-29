@@ -37,15 +37,9 @@
             android:text="下一页"/>
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/sd_main"
-            android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:clickable="true"/>
-
-    </ScrollView>
+   <android.support.v7.widget.RecyclerView
+       android:id="@+id/rv_main_comic"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+   </android.support.v7.widget.RecyclerView>
 </LinearLayout>
