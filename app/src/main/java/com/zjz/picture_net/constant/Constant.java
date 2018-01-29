@@ -5,7 +5,10 @@ package com.zjz.picture_net.constant;
  */
 
 public class Constant {
+    //kuku漫画网地址
+    public static final String KUKU_URL = "http://comic.kukudm.com/";
     //伪装浏览器
+
     public static final String BROWSER_0 = "Mozilla/5.0(compatible;MSIE9.0;WindowsNT6.1;Trident/5.0";
     public static final String BROWSER_1 = "Mozilla/5.0(WindowsNT6.1;rv:2.0.1)Gecko/20100101Firefox/4.0.1";
     public static final String BROWSER_2 = "Opera/9.80(WindowsNT6.1;U;en)Presto/2.8.131Version/11.11";

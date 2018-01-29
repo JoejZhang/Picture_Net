@@ -1,5 +1,6 @@
 package com.zjz.picture_net.model;
 
+import com.zjz.picture_net.constant.Constant;
 import com.zjz.picture_net.contract.IMainContract;
 import com.zjz.picture_net.entity.ComicInfo;
 import com.zjz.picture_net.utils.HttpUtils;
@@ -10,6 +11,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -39,10 +41,14 @@ public class MainModelImpl implements IMainContract.Model {
                         String title =  elementPictures.get(i).select("a[href]").get(1).text();//获取标题
                         String contentUrl = elementPictures.get(i).select("a[href]").get(1).attr("href");//获取链接url
 
+                        int end = imgUrl.lastIndexOf("/");
+                        String imgHead = imgUrl.substring(0, end + 1);
+                        String imgBack = URLEncoder.encode(imgUrl.substring(end + 1), "utf-8");//url中文转码
+
                         ComicInfo comicInfo = new ComicInfo();
                         comicInfo.setName(title);
-                        comicInfo.setImgUrl(imgUrl);
-                        comicInfo.setContentUrl("http://comic.kukudm.com/"+ contentUrl);
+                        comicInfo.setImgUrl(imgHead + imgBack);
+                        comicInfo.setContentUrl(Constant.KUKU_URL+ contentUrl);
                         comicInfoArrayList.add(comicInfo);
                     }
 

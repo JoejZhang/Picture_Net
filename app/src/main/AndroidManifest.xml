@@ -21,6 +21,8 @@
         </activity>
         <activity android:name=".ui.ComicCatalogActivity">
         </activity>
+        <activity android:name=".ui.ComicContentActivity">
+        </activity>
     </application>
 
 </manifest>
