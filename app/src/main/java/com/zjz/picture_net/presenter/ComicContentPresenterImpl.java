@@ -1,9 +1,15 @@
 package com.zjz.picture_net.presenter;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.zjz.picture_net.contract.IComicContentContract;
+import com.zjz.picture_net.eventbus.ContentReasonEvent;
 import com.zjz.picture_net.model.ComicContentModelImpl;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -14,12 +20,11 @@ import java.util.ArrayList;
 public class ComicContentPresenterImpl implements IComicContentContract.Presenter {
     private IComicContentContract.Model mModel;
     private IComicContentContract.View mView;
-    private Activity mActivity;
 
-    public ComicContentPresenterImpl(IComicContentContract.View view, Activity activity) {
+    public ComicContentPresenterImpl(IComicContentContract.View view) {
         mView = view;
-        mActivity = activity;
         mModel = new ComicContentModelImpl();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -27,23 +32,23 @@ public class ComicContentPresenterImpl implements IComicContentContract.Presente
         mModel.getComic(url, new IComicContentContract.OnModelResultCallBack() {
             @Override
             public void succeed(final ArrayList<String> arrayList) {
-               mActivity.runOnUiThread(new Runnable() {
-                   @Override
-                   public void run() {
-                       mView.onShowComicSucceed(arrayList);
-                   }
-               });
+
             }
 
             @Override
             public void failed(final String reason) {
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mView.onShowComicFailed(reason);
-                    }
-                });
+
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void showComicSucceed(ArrayList<String> arrayList){
+        mView.onShowComicSucceed(arrayList);
+        Log.e("haha","调用了");
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void showComicFailed(ContentReasonEvent contentReasonEvent){
+        mView.onShowComicFailed(contentReasonEvent.getReason());
     }
 }

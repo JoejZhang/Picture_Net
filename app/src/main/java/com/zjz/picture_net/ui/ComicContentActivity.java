@@ -2,7 +2,6 @@ package com.zjz.picture_net.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,8 +16,6 @@ import com.zjz.picture_net.presenter.ComicContentPresenterImpl;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class ComicContentActivity extends BaseActivity implements IComicContentContract.View, OnClickRecyclerViewListener{
     private static final String INTENT_URL = "URL";
@@ -54,15 +51,15 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
         mRvContent.setItemAnimator(new DefaultItemAnimator());
         mRvContent.setAdapter(mComicContentAdapter);
 
-        mComicContentPresenter = new ComicContentPresenterImpl(this,this);
+        mComicContentPresenter = new ComicContentPresenterImpl(this);
         mComicContentPresenter.showComicList(thisUrl);
 
     }
 
     @Override
     public void onShowComicSucceed(ArrayList<String> arrayList) {
-        mImgUrlList = arrayList;
-        mComicContentAdapter.updateData(mImgUrlList);
+ //       mImgUrlList = arrayList;
+        mComicContentAdapter.appendData(arrayList);
     }
 
     @Override

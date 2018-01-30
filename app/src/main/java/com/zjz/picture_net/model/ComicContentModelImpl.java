@@ -4,8 +4,10 @@ import android.view.View;
 
 import com.zjz.picture_net.constant.Constant;
 import com.zjz.picture_net.contract.IComicContentContract;
+import com.zjz.picture_net.eventbus.ContentReasonEvent;
 import com.zjz.picture_net.utils.HttpUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,6 +33,7 @@ public class ComicContentModelImpl implements IComicContentContract.Model {
 
                     ArrayList<String> imgUrlList = new ArrayList<>();
 
+                    int num = 0;
                     while( !nextUrl.equals("")) {
 
                         Connection conn = Jsoup.connect(nextUrl);
@@ -43,6 +46,7 @@ public class ComicContentModelImpl implements IComicContentContract.Model {
 
                         Element element = elements.get(1);
                         imgString = element.select("script:not([src])").toString();
+
                         if (element.select("a[href]:has([src])").size() == 1) {
                             nextUrl = Constant.KUKU_URL+element.select("a[href]:has([src])").first().attr("href");
                         } else {
@@ -60,9 +64,17 @@ public class ComicContentModelImpl implements IComicContentContract.Model {
                         final String httpImgUrl = "http://n.1whour.com/" + imgString.substring(begin + 2, end + 3);//图片的地址
 
                         imgUrlList.add(httpImgUrl);
+
+                        num++;
+
+                        if(num == 3){
+                            EventBus.getDefault().post(imgUrlList);
+                            imgUrlList.clear();
+                        }
                     }
 
-                    onModelResultCallBack.succeed(imgUrlList);
+                    EventBus.getDefault().post(imgUrlList);
+                    imgUrlList.clear();
 //                        if (!previousString.equals("")) {
 //                            mPreviousUrl = "http://comic.kukudm.com" + previousString.substring(begin1 + 1, end1 + 3);//上一页的地址
 //                        }
@@ -80,7 +92,7 @@ public class ComicContentModelImpl implements IComicContentContract.Model {
                                 //    mTvShow.setText(httpImgUrl + "\n" + mNextUrl + "\n");
 
                 } catch (IOException e) {
-                    onModelResultCallBack.failed("未知错误");
+                    EventBus.getDefault().post(new ContentReasonEvent("未知错误"));
                     e.printStackTrace();
                 }
             }
