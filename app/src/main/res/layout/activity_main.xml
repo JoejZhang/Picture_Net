@@ -8,35 +8,29 @@
     android:orientation="vertical"
     tools:context="com.zjz.picture_net.MainActivity">
 
+   <RelativeLayout
+       android:layout_width="match_parent"
+       android:paddingStart="8dp"
+       android:paddingEnd="8dp"
+       android:background="@color/colorPrimary"
+       android:layout_height="48dp">
+      <TextView
+          android:id="@+id/tv_main_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="18sp"
+          android:textColor="#FFFFFF"
+          android:layout_centerVertical="true"
+          android:layout_alignParentStart="true"
+          />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_get"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="获取"/>
-
-        <Button
-            android:id="@+id/btn_previous"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="上一页"/>
-
-        <Button
-            android:id="@+id/btn_next"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="下一页"/>
-    </LinearLayout>
+   </RelativeLayout>
 
    <android.support.v7.widget.RecyclerView
        android:id="@+id/rv_main_comic"
        android:layout_width="match_parent"
-       android:layout_height="match_parent">
+       android:layout_height="match_parent"
+       android:paddingTop="8dp"
+       android:paddingBottom="8dp">
    </android.support.v7.widget.RecyclerView>
 </LinearLayout>

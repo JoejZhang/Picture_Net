@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.zjz.picture_net.contract.IComicContentContract;
+import com.zjz.picture_net.eventbus.ContentListEvent;
 import com.zjz.picture_net.eventbus.ContentReasonEvent;
 import com.zjz.picture_net.model.ComicContentModelImpl;
 
@@ -21,10 +22,29 @@ public class ComicContentPresenterImpl implements IComicContentContract.Presente
     private IComicContentContract.Model mModel;
     private IComicContentContract.View mView;
 
-    public ComicContentPresenterImpl(IComicContentContract.View view) {
+    private static volatile ComicContentPresenterImpl instance;
+
+    public static ComicContentPresenterImpl getInstance(IComicContentContract.View view) {
+
+        if (instance == null) {
+            synchronized (ComicContentPresenterImpl.class) {
+                if (instance == null) {
+                    instance = new ComicContentPresenterImpl(view);
+                }
+            }
+        }
+        instance.setView(view);
+        return instance;
+    }
+
+    private ComicContentPresenterImpl(IComicContentContract.View view) {
         mView = view;
         mModel = new ComicContentModelImpl();
         EventBus.getDefault().register(this);
+    }
+
+    public void setView(IComicContentContract.View view) {
+        mView = view;
     }
 
     @Override
@@ -43,12 +63,18 @@ public class ComicContentPresenterImpl implements IComicContentContract.Presente
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void showComicSucceed(ArrayList<String> arrayList){
-        mView.onShowComicSucceed(arrayList);
-        Log.e("haha","调用了");
+    public void showComicSucceed(ContentListEvent contentListEvent) {
+        Log.e("haha","xix"+contentListEvent.getStringArrayList().size());
+        for(int i = 0;i<contentListEvent.getStringArrayList().size();i++){
+            Log.e("haha","xix"+contentListEvent.getStringArrayList().get(i));
+        }
+        mView.onShowComicSucceed(contentListEvent.getStringArrayList());
+        Log.e("haha", "调用了");
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void showComicFailed(ContentReasonEvent contentReasonEvent){
+    public void showComicFailed(ContentReasonEvent contentReasonEvent) {
         mView.onShowComicFailed(contentReasonEvent.getReason());
+        Log.e("haha", "失败调用了");
     }
 }

@@ -2,9 +2,12 @@ package com.zjz.picture_net.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
 
 import com.zjz.picture_net.R;
 import com.zjz.picture_net.adapter.ComicContentAdapter;
@@ -27,6 +30,8 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
 
     private ArrayList<String> mImgUrlList ;
 
+    private View mDecorView;
+
     public static void gotoActivityByUrl(Context context, String thisUrl) {
         Intent intent = new Intent(context, ComicContentActivity.class);
         intent.putExtra(INTENT_URL, thisUrl);
@@ -40,6 +45,16 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
 
     @Override
     protected void initData() {
+
+        mDecorView = getWindow().getDecorView();
+        mDecorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         Intent intent = getIntent();
         String thisUrl = intent.getStringExtra(INTENT_URL);
 
@@ -51,7 +66,7 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
         mRvContent.setItemAnimator(new DefaultItemAnimator());
         mRvContent.setAdapter(mComicContentAdapter);
 
-        mComicContentPresenter = new ComicContentPresenterImpl(this);
+        mComicContentPresenter =  ComicContentPresenterImpl.getInstance(this);
         mComicContentPresenter.showComicList(thisUrl);
 
     }
@@ -59,6 +74,9 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
     @Override
     public void onShowComicSucceed(ArrayList<String> arrayList) {
  //       mImgUrlList = arrayList;
+        for(int i = 0;i<arrayList.size();i++){
+            Log.e("haha",arrayList.get(i));
+        }
         mComicContentAdapter.appendData(arrayList);
     }
 
@@ -82,5 +100,20 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
         return false;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mDecorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

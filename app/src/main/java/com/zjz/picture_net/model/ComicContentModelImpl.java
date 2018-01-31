@@ -1,9 +1,11 @@
 package com.zjz.picture_net.model;
 
+import android.util.Log;
 import android.view.View;
 
 import com.zjz.picture_net.constant.Constant;
 import com.zjz.picture_net.contract.IComicContentContract;
+import com.zjz.picture_net.eventbus.ContentListEvent;
 import com.zjz.picture_net.eventbus.ContentReasonEvent;
 import com.zjz.picture_net.utils.HttpUtils;
 
@@ -67,14 +69,21 @@ public class ComicContentModelImpl implements IComicContentContract.Model {
 
                         num++;
 
-                        if(num == 3){
-                            EventBus.getDefault().post(imgUrlList);
+                        if(imgUrlList.size() == 3){
+                            for(int i = 0;i<imgUrlList.size();i++){
+                                Log.e("haha","haha"+imgUrlList.get(i));
+                            }
+                            ArrayList<String> strings =new ArrayList<>();
+                            strings.addAll(imgUrlList);
+                            EventBus.getDefault().post(new ContentListEvent(strings));
                             imgUrlList.clear();
                         }
+                        Log.e("haha","获取地址"+num);
                     }
 
-                    EventBus.getDefault().post(imgUrlList);
-                    imgUrlList.clear();
+                    Log.e("haha","post");
+                    EventBus.getDefault().post(new ContentListEvent(imgUrlList));
+                   // imgUrlList.clear();
 //                        if (!previousString.equals("")) {
 //                            mPreviousUrl = "http://comic.kukudm.com" + previousString.substring(begin1 + 1, end1 + 3);//上一页的地址
 //                        }

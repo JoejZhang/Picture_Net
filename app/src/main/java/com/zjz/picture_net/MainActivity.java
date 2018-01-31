@@ -1,10 +1,12 @@
 package com.zjz.picture_net;
 
+import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.Button;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.zjz.picture_net.adapter.MainComicRvAdapter;
@@ -14,36 +16,29 @@ import com.zjz.picture_net.entity.ComicInfo;
 import com.zjz.picture_net.listener.OnClickRecyclerViewListener;
 import com.zjz.picture_net.presenter.MainPresenterImpl;
 import com.zjz.picture_net.ui.ComicCatalogActivity;
+import com.zjz.picture_net.utils.GridSpacingItemDecoration;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity  implements OnClickRecyclerViewListener , IMainContract.View{
+public class MainActivity extends BaseActivity implements OnClickRecyclerViewListener, IMainContract.View {
 
-    @BindView(R.id.btn_get)
-    Button mBtnGet;
-    @BindView(R.id.btn_next)
-    Button mBtnNext;
-    @BindView(R.id.btn_previous)
-    Button mBtnPrevious;
+
     @BindView(R.id.rv_main_comic)
     RecyclerView mRvMainComic;
+    @BindView(R.id.tv_main_title)
+    TextView mTvMainTitle;
+
 
     private String mNextUrl;
     private String mPreviousUrl;
 
     private MainComicRvAdapter mMainComicRvAdapter;
 
-    private  ArrayList<ComicInfo> mComicInfoArrayList = new ArrayList<>();//漫画目录
+    private ArrayList<ComicInfo> mComicInfoArrayList = new ArrayList<>();//漫画目录
 
     private MainPresenterImpl mMainPresenter;
 
@@ -54,15 +49,28 @@ public class MainActivity extends BaseActivity  implements OnClickRecyclerViewLi
 
     @Override
     protected void initData() {
-        mMainPresenter = new MainPresenterImpl(this,this);
+        mMainPresenter = new MainPresenterImpl(this, this);
 
-        mMainComicRvAdapter = new MainComicRvAdapter();
+        mTvMainTitle.setText("看看漫画");
+
+        mMainComicRvAdapter = new MainComicRvAdapter(getWindowWidth());
         mMainComicRvAdapter.setOnRecyclerViewListener(this);
-        mRvMainComic.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mRvMainComic.setItemAnimator(new DefaultItemAnimator());
+
+        mRvMainComic.setLayoutManager(new GridLayoutManager(this, 3,GridLayoutManager.VERTICAL, false));
+        mRvMainComic.addItemDecoration(new GridSpacingItemDecoration(3, getResources().getDimensionPixelSize(R.dimen.padding_middle), true));
+        mRvMainComic.setHasFixedSize(true);
         mRvMainComic.setAdapter(mMainComicRvAdapter);
 
+
         mMainPresenter.showComicList("http://comic.kukudm.com/");
+    }
+
+    private int getWindowWidth() {
+        WindowManager manager = this.getWindowManager();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        manager.getDefaultDisplay().getMetrics(outMetrics);
+        int width = outMetrics.widthPixels;
+        return width;
     }
 
 
@@ -82,25 +90,10 @@ public class MainActivity extends BaseActivity  implements OnClickRecyclerViewLi
         showToast(reason);
     }
 
-    @OnClick({R.id.btn_get, R.id.btn_next, R.id.btn_previous})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_get:
-            //    mMainPresenter.showComicList("http://comic.kukudm.com/");
-                break;
-            case R.id.btn_previous:
-                break;
-            case R.id.btn_next:
-                break;
-            default:
-                break;
-
-        }
-    }
 
     @Override
     public void onItemClick(int position) {
-       ComicCatalogActivity.gotoActivityByUrl(this,mComicInfoArrayList.get(position).getContentUrl(),mComicInfoArrayList.get(position).getImgUrl() ); //点击跳转
+        ComicCatalogActivity.gotoActivityByUrl(this, mComicInfoArrayList.get(position).getContentUrl(), mComicInfoArrayList.get(position).getImgUrl()); //点击跳转
     }
 
     @Override
@@ -109,13 +102,10 @@ public class MainActivity extends BaseActivity  implements OnClickRecyclerViewLi
     }
 
 
-
     private void showPicture(final String url) {
 
 
-
     }
-
 
 
     @OnClick()
@@ -123,4 +113,10 @@ public class MainActivity extends BaseActivity  implements OnClickRecyclerViewLi
     }
 
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 }
