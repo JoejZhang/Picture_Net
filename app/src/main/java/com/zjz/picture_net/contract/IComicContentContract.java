@@ -16,11 +16,13 @@ public interface IComicContentContract {
 
     interface Model{
         void getComic(final String url , IComicContentContract.OnModelResultCallBack onModelResultCallBack );
+        void stopThread();
 
     }
 
     interface Presenter{
         void showComicList(String url);
+        void stopThread();
     }
 
     interface OnModelResultCallBack{

@@ -62,19 +62,18 @@ public class ComicContentPresenterImpl implements IComicContentContract.Presente
         });
     }
 
+    @Override
+    public void stopThread() {
+        mModel.stopThread();
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void showComicSucceed(ContentListEvent contentListEvent) {
-        Log.e("haha","xix"+contentListEvent.getStringArrayList().size());
-        for(int i = 0;i<contentListEvent.getStringArrayList().size();i++){
-            Log.e("haha","xix"+contentListEvent.getStringArrayList().get(i));
-        }
         mView.onShowComicSucceed(contentListEvent.getStringArrayList());
-        Log.e("haha", "调用了");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void showComicFailed(ContentReasonEvent contentReasonEvent) {
         mView.onShowComicFailed(contentReasonEvent.getReason());
-        Log.e("haha", "失败调用了");
     }
 }

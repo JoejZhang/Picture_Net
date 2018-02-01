@@ -2,11 +2,9 @@ package com.zjz.picture_net.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.zjz.picture_net.R;
@@ -27,9 +25,6 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
 
     private ComicContentPresenterImpl mComicContentPresenter;
     private ComicContentAdapter mComicContentAdapter;
-
-    private ArrayList<String> mImgUrlList ;
-
     private View mDecorView;
 
     public static void gotoActivityByUrl(Context context, String thisUrl) {
@@ -58,7 +53,6 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
         Intent intent = getIntent();
         String thisUrl = intent.getStringExtra(INTENT_URL);
 
-        mImgUrlList = new ArrayList<>();
         //适配器和RecyclerView初始化
         mComicContentAdapter = new ComicContentAdapter();
         mComicContentAdapter.setOnRecyclerViewListener(this);
@@ -73,10 +67,6 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
 
     @Override
     public void onShowComicSucceed(ArrayList<String> arrayList) {
- //       mImgUrlList = arrayList;
-        for(int i = 0;i<arrayList.size();i++){
-            Log.e("haha",arrayList.get(i));
-        }
         mComicContentAdapter.appendData(arrayList);
     }
 
@@ -115,5 +105,6 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mComicContentPresenter.stopThread();//关闭线程
     }
 }

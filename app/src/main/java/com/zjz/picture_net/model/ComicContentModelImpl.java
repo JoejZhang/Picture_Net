@@ -24,6 +24,8 @@ import java.util.ArrayList;
  */
 
 public class ComicContentModelImpl implements IComicContentContract.Model {
+
+    private  boolean isStop = false;//是否停止循环访问
     @Override
     public void getComic(final String url, final IComicContentContract.OnModelResultCallBack onModelResultCallBack) {
 
@@ -33,63 +35,66 @@ public class ComicContentModelImpl implements IComicContentContract.Model {
                 String nextUrl = url;
                 try {
 
-                    ArrayList<String> imgUrlList = new ArrayList<>();
+                        ArrayList<String> imgUrlList = new ArrayList<>();
+                        isStop = false;
+                        int num = 0;
+                        while (!nextUrl.equals("") && !isStop) {
 
-                    int num = 0;
-                    while( !nextUrl.equals("")) {
+                            Connection conn = Jsoup.connect(nextUrl);
+                            conn.header("User-Agent", HttpUtils.getUserAgentString());
 
-                        Connection conn = Jsoup.connect(nextUrl);
-                        conn.header("User-Agent", HttpUtils.getUserAgentString());
+                            Document doc = conn.get();
+                            Elements elements = doc.select("tbody tr");
 
-                        Document doc = conn.get();
-                        Elements elements = doc.select("tbody tr");
+                            String imgString;
 
-                        String imgString;
+                            Element element = elements.get(1);
+                            imgString = element.select("script:not([src])").toString();
 
-                        Element element = elements.get(1);
-                        imgString = element.select("script:not([src])").toString();
-
-                        if (element.select("a[href]:has([src])").size() == 1) {
-                            nextUrl = Constant.KUKU_URL+element.select("a[href]:has([src])").first().attr("href");
-                        } else {
-                            //previousString = element.select("a[href]:has([src])").get(0).toString();
-                            nextUrl = Constant.KUKU_URL+ element.select("a[href]:has([src])").get(1).attr("href");
-                            if (nextUrl.contains("exit")) {
-                                nextUrl = "";//结束的标志
+                            if (element.select("a[href]:has([src])").size() == 1) {
+                                nextUrl = Constant.KUKU_URL + element.select("a[href]:has([src])").first().attr("href");
+                            } else {
+                                //previousString = element.select("a[href]:has([src])").get(0).toString();
+                                nextUrl = Constant.KUKU_URL + element.select("a[href]:has([src])").get(1).attr("href");
+                                if (nextUrl.contains("exit")) {
+                                    nextUrl = "";//结束的标志
+                                }
                             }
+
+                            int begin = imgString.indexOf("+\"");
+                            int end = imgString.indexOf("jpg");
+
+
+                            final String httpImgUrl = "http://n.1whour.com/" + imgString.substring(begin + 2, end + 3);//图片的地址
+
+                            imgUrlList.add(httpImgUrl);
+
+                            num++;
+
+                            if (imgUrlList.size() == 3) {
+
+                                ArrayList<String> strings = new ArrayList<>();
+                                strings.addAll(imgUrlList);
+                                EventBus.getDefault().post(new ContentListEvent(strings));
+                                imgUrlList.clear();
+                            }
+                            Log.e("haha", this.toString() + "获取地址" + num);
+
                         }
 
-                        int begin = imgString.indexOf("+\"");
-                        int end = imgString.indexOf("jpg");
-
-
-                        final String httpImgUrl = "http://n.1whour.com/" + imgString.substring(begin + 2, end + 3);//图片的地址
-
-                        imgUrlList.add(httpImgUrl);
-
-                        num++;
-
-                        if(imgUrlList.size() == 3){
-                            for(int i = 0;i<imgUrlList.size();i++){
-                                Log.e("haha","haha"+imgUrlList.get(i));
-                            }
-                            ArrayList<String> strings =new ArrayList<>();
-                            strings.addAll(imgUrlList);
-                            EventBus.getDefault().post(new ContentListEvent(strings));
-                            imgUrlList.clear();
-                        }
-                        Log.e("haha","获取地址"+num);
-                    }
-
-                    Log.e("haha","post");
-                    EventBus.getDefault().post(new ContentListEvent(imgUrlList));
-
-
+                        isStop = false;
+                        EventBus.getDefault().post(new ContentListEvent(imgUrlList));
                 } catch (IOException e) {
                     EventBus.getDefault().post(new ContentReasonEvent("请检查网络连接"));
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+
+    @Override
+    public void stopThread() {
+        isStop = true;
     }
 }

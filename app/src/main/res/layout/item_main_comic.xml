@@ -22,15 +22,9 @@
         fresco:retryImage="@drawable/refresh_small"
         fresco:retryImageScaleType="center"
 
-        fresco:progressBarImage="@drawable/loading_small"
-        fresco:progressBarImageScaleType="center"
-        fresco:progressBarAutoRotateInterval="1000"
-
         fresco:failureImage="@drawable/loading_failed_small"
         fresco:failureImageScaleType = "center"
 
-        fresco:placeholderImage="@drawable/loading_small"
-        fresco:placeholderImageScaleType="center"
     />
     <TextView
         android:id="@+id/tv_main_item_title"
