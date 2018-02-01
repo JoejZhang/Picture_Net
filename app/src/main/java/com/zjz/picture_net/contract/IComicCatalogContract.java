@@ -1,6 +1,7 @@
 package com.zjz.picture_net.contract;
 
 import com.zjz.picture_net.entity.ComicCatalogAndUrl;
+import com.zjz.picture_net.entity.ComicDescription;
 import com.zjz.picture_net.entity.ComicInfo;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public interface IComicCatalogContract {
     interface View{
-        void  onShowComicDescriptionSucceed(String text);
+        void  onShowComicDescriptionSucceed(ComicDescription comicDescription);
         void  onShowComicDescriptionFailed(String reason);
         void  onShowComicCatalogSucceed(ArrayList<ComicCatalogAndUrl> comicInfoArrayList);
         void  onShowComicCatalogFailed(String reason );
@@ -27,7 +28,7 @@ public interface IComicCatalogContract {
     }
 
     interface OnModelResultCallBack{
-        void succeedDescription(final String description);
+        void succeedDescription(final ComicDescription comicDescription);
         void succeedCatalog(final ArrayList<ComicCatalogAndUrl> arrayList);
         void failedDescription(final String reason);
         void failedCatalog(final String reason);

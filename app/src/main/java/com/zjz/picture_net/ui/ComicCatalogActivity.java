@@ -2,9 +2,10 @@ package com.zjz.picture_net.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
+import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -13,30 +14,46 @@ import com.zjz.picture_net.adapter.ComicCatalogAdapter;
 import com.zjz.picture_net.base.BaseActivity;
 import com.zjz.picture_net.contract.IComicCatalogContract;
 import com.zjz.picture_net.entity.ComicCatalogAndUrl;
+import com.zjz.picture_net.entity.ComicDescription;
 import com.zjz.picture_net.listener.OnClickRecyclerViewListener;
 import com.zjz.picture_net.presenter.CatalogPresenterImpl;
+import com.zjz.picture_net.utils.GridSpacingItemDecoration;
+import com.zjz.picture_net.view.ExpandableTextView;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.OnClick;
+import butterknife.ButterKnife;
 
 
-public class ComicCatalogActivity extends BaseActivity implements IComicCatalogContract.View , OnClickRecyclerViewListener {
+public class ComicCatalogActivity extends BaseActivity implements IComicCatalogContract.View, OnClickRecyclerViewListener {
 
     private static final String INTENT_URL = "URL";
     private static final String INTENT_IMG_URL = "img_url";
     @BindView(R.id.sv_catalog)
     SimpleDraweeView mSvCatalog;
-    @BindView(R.id.tv_catalog_description)
-    TextView mTvCatalogDescription;
+    @BindView(R.id.tv_catalog_title)
+    TextView mTvCatalogTitle;
+    @BindView(R.id.tv_catalog_comic_title)
+    TextView mTvCatalogComicTitle;
+    @BindView(R.id.tv_catalog_comic_author)
+    TextView mTvCatalogComicAuthor;
+    @BindView(R.id.tv_catalog_comic_date)
+    TextView mTvCatalogComicDate;
+    @BindView(R.id.tv_catalog_comic_status)
+    TextView mTvCatalogComicStatus;
+    @BindView(R.id.expandable_catalog_description)
+    ExpandableTextView mExpandableCatalogDescription;
+    @BindView(R.id.id_expand_textview)
+    TextView mIdExpandTextview;
     @BindView(R.id.rv_catalog)
     RecyclerView mRvCatalog;
+
     private CatalogPresenterImpl mCatalogPresenter;
     private String mThisUrl;
     private String mImgURL;
 
-    private ArrayList<ComicCatalogAndUrl> mCatalogList ;
+    private ArrayList<ComicCatalogAndUrl> mCatalogList;
     private ComicCatalogAdapter mComicCatalogAdapter;
 
     public static void gotoActivityByUrl(Context context, String thisUrl, String imgUrl) {
@@ -67,8 +84,10 @@ public class ComicCatalogActivity extends BaseActivity implements IComicCatalogC
         //适配器和RecyclerView初始化
         mComicCatalogAdapter = new ComicCatalogAdapter();
         mComicCatalogAdapter.setOnRecyclerViewListener(this);
-        mRvCatalog.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mRvCatalog.setItemAnimator(new DefaultItemAnimator());
+
+        mRvCatalog.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
+        mRvCatalog.addItemDecoration(new GridSpacingItemDecoration(3, getResources().getDimensionPixelSize(R.dimen.padding_middle), true));
+        mRvCatalog.setHasFixedSize(true);
         mRvCatalog.setAdapter(mComicCatalogAdapter);
         //加载内容
         mCatalogPresenter.showComicInformation(mThisUrl);
@@ -81,8 +100,14 @@ public class ComicCatalogActivity extends BaseActivity implements IComicCatalogC
     }
 
     @Override
-    public void onShowComicDescriptionSucceed(String text) {
-        mTvCatalogDescription.setText(text);
+    public void onShowComicDescriptionSucceed(ComicDescription comicDescription) {
+        mTvCatalogTitle.setText(comicDescription.getTitle());
+        mTvCatalogComicTitle.setText(comicDescription.getTitle());
+        mTvCatalogComicAuthor.setText(comicDescription.getAuthor());
+        mTvCatalogComicDate.setText(comicDescription.getUpdateDate());
+        mTvCatalogComicStatus.setText(comicDescription.getStatus());
+        mIdExpandTextview.setVisibility(View.VISIBLE);
+        mExpandableCatalogDescription.setText("漫画简介：\n"+ comicDescription.getDescription());
     }
 
     @Override
@@ -103,7 +128,7 @@ public class ComicCatalogActivity extends BaseActivity implements IComicCatalogC
 
     @Override
     public void onItemClick(int position) {
-        ComicContentActivity.gotoActivityByUrl(this,mCatalogList.get(position).getUrl());
+        ComicContentActivity.gotoActivityByUrl(this, mCatalogList.get(position).getUrl());
     }
 
     @Override
@@ -112,5 +137,10 @@ public class ComicCatalogActivity extends BaseActivity implements IComicCatalogC
     }
 
 
-
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 }

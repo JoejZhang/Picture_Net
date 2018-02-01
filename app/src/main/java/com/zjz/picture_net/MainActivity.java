@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity implements OnClickRecyclerViewLis
 
         mTvMainTitle.setText("看看漫画");
 
-        mMainComicRvAdapter = new MainComicRvAdapter(getWindowWidth());
+        mMainComicRvAdapter = new MainComicRvAdapter();
         mMainComicRvAdapter.setOnRecyclerViewListener(this);
 
         mRvMainComic.setLayoutManager(new GridLayoutManager(this, 3,GridLayoutManager.VERTICAL, false));
@@ -63,14 +63,6 @@ public class MainActivity extends BaseActivity implements OnClickRecyclerViewLis
 
 
         mMainPresenter.showComicList("http://comic.kukudm.com/");
-    }
-
-    private int getWindowWidth() {
-        WindowManager manager = this.getWindowManager();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        manager.getDefaultDisplay().getMetrics(outMetrics);
-        int width = outMetrics.widthPixels;
-        return width;
     }
 
 

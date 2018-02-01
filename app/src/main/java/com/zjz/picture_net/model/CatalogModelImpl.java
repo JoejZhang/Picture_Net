@@ -1,9 +1,12 @@
 package com.zjz.picture_net.model;
 
+import android.util.Log;
+
 import com.zjz.picture_net.constant.Constant;
 import com.zjz.picture_net.contract.IComicCatalogContract;
 import com.zjz.picture_net.contract.IMainContract;
 import com.zjz.picture_net.entity.ComicCatalogAndUrl;
+import com.zjz.picture_net.entity.ComicDescription;
 import com.zjz.picture_net.entity.ComicInfo;
 import com.zjz.picture_net.utils.HttpUtils;
 
@@ -33,12 +36,28 @@ public class CatalogModelImpl implements IComicCatalogContract.Model {
                     conn.header("User-Agent", HttpUtils.getUserAgentString());
 
                     doc = conn.get();
+                    Elements elementComicDescription = doc.select("html body>table").get(4).select(">tbody>tr>td").get(1).select(">table>tbody>tr>td>table>tbody>tr");
                     Elements elements = doc.select("#ComicInfo");
-                    Elements elements1 = doc.select("#comiclistn");
+                    Elements elements1 = doc.select("#comiclistn");//漫画列表
 
-                   String description  =  elements.first().text();
+                    String description  =  elements.first().text();//漫画简介
 
-                   Elements elements2   =  elements1.select("dd");
+
+                    ComicDescription comicDescription = new ComicDescription();
+                    String title = elementComicDescription.get(0).text();
+                    if(title.lastIndexOf("漫画") == (title.length() - 2)){//截取漫画名
+                      title =  title.substring(0,title.length() - 2);
+                    }
+                    String des = elementComicDescription.get(4).text();
+                    String[] desS = des.split(" | ");
+                    comicDescription.setTitle(title);
+                    comicDescription.setAuthor(desS[0]);
+                    comicDescription.setStatus(desS[2]);
+                    comicDescription.setUpdateDate(desS[4]);
+                    comicDescription.setDescription(description);
+
+
+                   Elements elements2   =  elements1.select("dd");//列表
 
                     for(int i = 0 ; i<elements2.size() ; i++){
                         ComicCatalogAndUrl comicCatalogAndUrl = new ComicCatalogAndUrl();
@@ -48,7 +67,7 @@ public class CatalogModelImpl implements IComicCatalogContract.Model {
                     }
 
 
-                    onModelResultCallBack.succeedDescription(description);
+                    onModelResultCallBack.succeedDescription(comicDescription);
                     onModelResultCallBack.succeedCatalog(arrayList);
 //                    Elements elementPictures = elements.get(1).select("dd");
 //

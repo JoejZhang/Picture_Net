@@ -28,25 +28,101 @@
 
     </RelativeLayout>
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/sv_catalog"
-        android:layout_width="150dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        fresco:actualImageScaleType ="fitCenter"
-        fresco:failureImage="@drawable/loading_failed"
-        fresco:placeholderImage="@drawable/loading"
-        fresco:placeholderImageScaleType="fitCenter"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingStart="@dimen/padding_middle"
+        android:paddingEnd="@dimen/padding_middle"
+        >
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sv_catalog"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            fresco:actualImageScaleType ="fitCenter"
+            fresco:failureImage="@drawable/loading_failed"
+            fresco:placeholderImage="@drawable/loading"
+            fresco:placeholderImageScaleType="fitCenter"
+            fresco:roundBottomLeft="true"
+            fresco:roundBottomRight="true"
+            fresco:roundTopLeft="true"
+            fresco:roundTopRight="true"
+            fresco:roundedCornerRadius="5dp"
+            fresco:roundingBorderWidth="1.5dp"
+            fresco:roundingBorderColor="@color/colorAccent"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingStart="16dp">
+            <TextView
+                android:id="@+id/tv_catalog_comic_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_big_big"
+                android:paddingBottom="16dp"
+                android:textColor="@color/textBlack"/>
+            <TextView
+                android:id="@+id/tv_catalog_comic_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_middle"
+                android:paddingBottom="16dp"
+                android:textColor="@color/textBlack2"/>
+            <TextView
+                android:id="@+id/tv_catalog_comic_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_middle"
+                android:paddingBottom="16dp"
+                android:textColor="@color/textBlack2"/>
+            <TextView
+                android:id="@+id/tv_catalog_comic_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_middle"
+                android:paddingBottom="16dp"
+                android:textColor="@color/textBlack2"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.zjz.picture_net.view.ExpandableTextView
+        android:id="@+id/expandable_catalog_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop = "8dp"
+        android:paddingStart="@dimen/padding_middle"
+        android:paddingEnd="@dimen/padding_middle">
+        <TextView
+            android:id="@id/id_source_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+          />
+        <TextView
+            android:id="@id/id_expand_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor = "@color/colorAccent"
+            android:visibility="gone"
+            android:text="【展开】" />
+    </com.zjz.picture_net.view.ExpandableTextView>
+
 
     <TextView
         android:id="@+id/tv_catalog_description"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/padding_middle"
+        android:paddingEnd="@dimen/padding_middle"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_catalog"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+       >
     </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

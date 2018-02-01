@@ -1,6 +1,7 @@
 package com.zjz.picture_net.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +22,7 @@ import butterknife.BindView;
 public class MainComicRvAdapter extends BaseRecyclerViewAdapter<ComicInfo> {
 
 
-    private int mImgWidth;//动态设置图片宽高
-
-    public MainComicRvAdapter(int imgWidth) {
-        mImgWidth = imgWidth;
-    }
+    private int mImgWidth = 0;//动态设置图片宽高
 
     @Override
     public ComicInfoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -47,6 +44,24 @@ public class MainComicRvAdapter extends BaseRecyclerViewAdapter<ComicInfo> {
 
 
         protected void bindView(ComicInfo comicInfo) {
+            if(mImgWidth == 0){
+                mSvMainItem.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewGroup.LayoutParams params = mSvMainItem.getLayoutParams();
+                        if(mSvMainItem.getWidth()!= 0){
+                            mImgWidth = mSvMainItem.getWidth();
+                            params.height = mImgWidth *4/3 ;
+                            mSvMainItem.setLayoutParams(params);
+                        }
+                    }
+                });
+            }
+            else{
+                ViewGroup.LayoutParams params = mSvMainItem.getLayoutParams();
+                params.height = mImgWidth *4/3 ;
+                mSvMainItem.setLayoutParams(params);
+            }
 
             mSvMainItem.setImageURI(comicInfo.getImgUrl());
             mTvMainItemTitle.setText(comicInfo.getName());
@@ -55,10 +70,7 @@ public class MainComicRvAdapter extends BaseRecyclerViewAdapter<ComicInfo> {
         private ComicInfoHolder(View itemView) {
             super(itemView);
 
-            ViewGroup.LayoutParams params = mSvMainItem.getLayoutParams();
-            params.width = (int) (mImgWidth * 7 /25);
-            params.height = (int) (mImgWidth * 28 / 75);
-            mSvMainItem.setLayoutParams(params);
+
         }
 
 

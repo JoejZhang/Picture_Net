@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="padding_middle">8dp</dimen>
+    <dimen name="padding_middle">12dp</dimen>
+    <dimen name="padding_big">16dp</dimen>
+
+    <dimen name="text_big_big">22sp</dimen>
+    <dimen name="text_big">18sp</dimen>
+    <dimen name="text_middle">16sp</dimen>
+    <dimen name="text_small">14sp</dimen>
 </resources>

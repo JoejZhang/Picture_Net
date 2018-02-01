@@ -3,4 +3,9 @@
     <color name="colorPrimary">#f99044</color>
     <color name="colorPrimaryDark">#f99044</color>
     <color name="colorAccent">#fdba43</color>
+
+    <!--字体-->
+    <color name="textBlack">#161616</color>
+    <color name="textBlack1">#212121</color>
+    <color name="textBlack2">#686868</color>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.zjz.picture_net.contract.IComicCatalogContract;
 import com.zjz.picture_net.entity.ComicCatalogAndUrl;
+import com.zjz.picture_net.entity.ComicDescription;
 import com.zjz.picture_net.model.CatalogModelImpl;
 import com.zjz.picture_net.ui.ComicCatalogActivity;
 
@@ -29,11 +30,11 @@ public class CatalogPresenterImpl implements IComicCatalogContract.Presenter {
         mModel.getComicInformation(url, new IComicCatalogContract.OnModelResultCallBack() {
 
             @Override
-            public void succeedDescription(final String description) {
+            public void succeedDescription(final ComicDescription comicDescription) {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mView.onShowComicDescriptionSucceed(description);
+                        mView.onShowComicDescriptionSucceed(comicDescription);
                     }
                 });
             }
