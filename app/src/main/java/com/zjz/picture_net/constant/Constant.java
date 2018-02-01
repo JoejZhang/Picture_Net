@@ -18,5 +18,9 @@ public class Constant {
     public static final String BROWSER_6 = "Mozilla/4.0(compatible;MSIE7.0;WindowsNT5.1;Maxthon2.0)";
     public static final String BROWSER_7 = "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/    20100101 Firefox/32.0";
 
+    //对话框
+    public static final int GRAVITY_TOP = 0;
+    public static final int GRAVITY_CENTER = 1;
+    public static final int GRAVITY_BOTTOM = 2;
 
 }

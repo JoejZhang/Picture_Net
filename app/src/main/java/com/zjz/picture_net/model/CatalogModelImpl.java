@@ -86,8 +86,8 @@ public class CatalogModelImpl implements IComicCatalogContract.Model {
 //                    onModelResultCallBack.succeed(comicInfoArrayList);
 
                 } catch (IOException e) {
-                    onModelResultCallBack.failedCatalog("未知错误");
-                    onModelResultCallBack.failedDescription("未知错误");
+                    onModelResultCallBack.failedCatalog("请检查网络连接");
+                    onModelResultCallBack.failedDescription("请检查网络连接");
                     e.printStackTrace();
                 }
             }

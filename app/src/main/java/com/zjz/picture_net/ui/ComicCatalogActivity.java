@@ -2,7 +2,6 @@ package com.zjz.picture_net.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,12 +17,12 @@ import com.zjz.picture_net.entity.ComicDescription;
 import com.zjz.picture_net.listener.OnClickRecyclerViewListener;
 import com.zjz.picture_net.presenter.CatalogPresenterImpl;
 import com.zjz.picture_net.utils.GridSpacingItemDecoration;
+import com.zjz.picture_net.utils.ProgressDialogUtil;
 import com.zjz.picture_net.view.ExpandableTextView;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class ComicCatalogActivity extends BaseActivity implements IComicCatalogContract.View, OnClickRecyclerViewListener {
@@ -85,10 +84,13 @@ public class ComicCatalogActivity extends BaseActivity implements IComicCatalogC
         mComicCatalogAdapter = new ComicCatalogAdapter();
         mComicCatalogAdapter.setOnRecyclerViewListener(this);
 
+        mRvCatalog.setNestedScrollingEnabled(false);
         mRvCatalog.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
         mRvCatalog.addItemDecoration(new GridSpacingItemDecoration(3, getResources().getDimensionPixelSize(R.dimen.padding_middle), true));
         mRvCatalog.setHasFixedSize(true);
         mRvCatalog.setAdapter(mComicCatalogAdapter);
+
+        ProgressDialogUtil.showProgressDialog(this,"内容加载中...");
         //加载内容
         mCatalogPresenter.showComicInformation(mThisUrl);
     }
@@ -108,22 +110,26 @@ public class ComicCatalogActivity extends BaseActivity implements IComicCatalogC
         mTvCatalogComicStatus.setText(comicDescription.getStatus());
         mIdExpandTextview.setVisibility(View.VISIBLE);
         mExpandableCatalogDescription.setText("漫画简介：\n"+ comicDescription.getDescription());
+        ProgressDialogUtil.dismiss();
     }
 
     @Override
     public void onShowComicDescriptionFailed(String reason) {
-
+        showToast(reason);
+        ProgressDialogUtil.dismiss();
     }
 
     @Override
     public void onShowComicCatalogSucceed(ArrayList<ComicCatalogAndUrl> comicInfoArrayList) {
         mCatalogList = comicInfoArrayList;
         mComicCatalogAdapter.updateData(mCatalogList);
+        ProgressDialogUtil.dismiss();
     }
 
     @Override
     public void onShowComicCatalogFailed(String reason) {
-
+        showToast(reason);
+        ProgressDialogUtil.dismiss();
     }
 
     @Override
@@ -136,11 +142,4 @@ public class ComicCatalogActivity extends BaseActivity implements IComicCatalogC
         return false;
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

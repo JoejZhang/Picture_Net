@@ -1,12 +1,7 @@
 package com.zjz.picture_net;
 
-import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.zjz.picture_net.adapter.MainComicRvAdapter;
@@ -17,11 +12,11 @@ import com.zjz.picture_net.listener.OnClickRecyclerViewListener;
 import com.zjz.picture_net.presenter.MainPresenterImpl;
 import com.zjz.picture_net.ui.ComicCatalogActivity;
 import com.zjz.picture_net.utils.GridSpacingItemDecoration;
+import com.zjz.picture_net.utils.ProgressDialogUtil;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity implements OnClickRecyclerViewListener, IMainContract.View {
@@ -31,10 +26,6 @@ public class MainActivity extends BaseActivity implements OnClickRecyclerViewLis
     RecyclerView mRvMainComic;
     @BindView(R.id.tv_main_title)
     TextView mTvMainTitle;
-
-
-    private String mNextUrl;
-    private String mPreviousUrl;
 
     private MainComicRvAdapter mMainComicRvAdapter;
 
@@ -61,7 +52,7 @@ public class MainActivity extends BaseActivity implements OnClickRecyclerViewLis
         mRvMainComic.setHasFixedSize(true);
         mRvMainComic.setAdapter(mMainComicRvAdapter);
 
-
+        ProgressDialogUtil.showProgressDialog(this,"内容加载中...");
         mMainPresenter.showComicList("http://comic.kukudm.com/");
     }
 
@@ -75,11 +66,13 @@ public class MainActivity extends BaseActivity implements OnClickRecyclerViewLis
     public void onShowComicListSucceed(ArrayList<ComicInfo> comicInfoArrayList) {//成功后回调
         mComicInfoArrayList = comicInfoArrayList;
         mMainComicRvAdapter.updateData(mComicInfoArrayList);
+        ProgressDialogUtil.dismiss();
     }
 
     @Override
     public void onShowComicListFailed(String reason) {
         showToast(reason);
+        ProgressDialogUtil.dismiss();
     }
 
 
@@ -94,21 +87,8 @@ public class MainActivity extends BaseActivity implements OnClickRecyclerViewLis
     }
 
 
-    private void showPicture(final String url) {
-
-
-    }
-
-
     @OnClick()
     public void onViewClicked() {
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

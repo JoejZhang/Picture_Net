@@ -55,7 +55,7 @@ public class MainModelImpl implements IMainContract.Model {
                     onModelResultCallBack.succeed(comicInfoArrayList);
 
                 } catch (IOException e) {
-                    onModelResultCallBack.failed("未知错误");
+                    onModelResultCallBack.failed("请检查网络连接");
                     e.printStackTrace();
                 }
             }

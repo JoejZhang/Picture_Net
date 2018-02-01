@@ -83,25 +83,10 @@ public class ComicContentModelImpl implements IComicContentContract.Model {
 
                     Log.e("haha","post");
                     EventBus.getDefault().post(new ContentListEvent(imgUrlList));
-                   // imgUrlList.clear();
-//                        if (!previousString.equals("")) {
-//                            mPreviousUrl = "http://comic.kukudm.com" + previousString.substring(begin1 + 1, end1 + 3);//上一页的地址
-//                        }
-//                        mNextUrl = "http://comic.kukudm.com" + nextString.substring(begin1 + 1, end1 + 3);//下一页的地址
-//
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                if (mPreviousUrl.equals("")) {
-//                                    mBtnPrevious.setVisibility(View.GONE);
-//                                } else {
-//                                    mBtnPrevious.setVisibility(View.VISIBLE);
-//                                }
-                                //           Glide.with(getBaseContext()).load(httpImgUrl).into(mIvMain);//显示图片
-                                //    mTvShow.setText(httpImgUrl + "\n" + mNextUrl + "\n");
+
 
                 } catch (IOException e) {
-                    EventBus.getDefault().post(new ContentReasonEvent("未知错误"));
+                    EventBus.getDefault().post(new ContentReasonEvent("请检查网络连接"));
                     e.printStackTrace();
                 }
             }

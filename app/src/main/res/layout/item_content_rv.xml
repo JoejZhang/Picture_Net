@@ -9,14 +9,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:background="#000000"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         fresco:actualImageScaleType ="fitCenter"
+
+        fresco:retryImage="@drawable/refresh"
+        fresco:retryImageScaleType="center"
+
+        fresco:progressBarImage="@drawable/loading"
+        fresco:progressBarImageScaleType="center"
+        fresco:progressBarAutoRotateInterval="1000"
+
         fresco:failureImage="@drawable/loading_failed"
-        fresco:placeholderImage="@drawable/loading"
-        fresco:placeholderImageScaleType="centerInside"
+        fresco:failureImageScaleType = "center"
+
+
         />
 </LinearLayout>
