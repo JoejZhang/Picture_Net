@@ -23,6 +23,10 @@ public class ComicContentPresenterImpl implements IComicContentContract.Presente
     private IComicContentContract.View mView;
 
     private static volatile ComicContentPresenterImpl instance;
+    /**
+     *  单例模式，虽然持有了Activity对象，但是在创建下一个Activity对象时
+     *  会替换掉上一个Activity对象，上一个Activity对象就可以被回收掉。
+     */
 
     public static ComicContentPresenterImpl getInstance(IComicContentContract.View view) {
 
