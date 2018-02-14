@@ -24,8 +24,8 @@ public class ComicContentPresenterImpl implements IComicContentContract.Presente
 
     private static volatile ComicContentPresenterImpl instance;
     /**
-     *  单例模式，虽然持有了Activity对象，但是在创建下一个Activity对象时
-     *  会替换掉上一个Activity对象，上一个Activity对象就可以被回收掉。
+     *  单例模式，虽然持有了Activity对象，但是在Activity的onDestroy方法被调用的时候，
+     *  会调用uninstallView方法取消对Activity对象的引用，以支持Activity对象可以被GC回收，防止Activity内存泄漏
      */
 
     public static ComicContentPresenterImpl getInstance(IComicContentContract.View view) {
@@ -49,6 +49,9 @@ public class ComicContentPresenterImpl implements IComicContentContract.Presente
 
     public void setView(IComicContentContract.View view) {
         mView = view;
+    }
+    public void uninstallView(){
+        mView = null;
     }
 
     @Override

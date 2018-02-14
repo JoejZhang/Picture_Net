@@ -106,5 +106,6 @@ public class ComicContentActivity extends BaseActivity implements IComicContentC
     protected void onDestroy() {
         super.onDestroy();
         mComicContentPresenter.stopThread();//关闭线程
+        mComicContentPresenter.uninstallView();//取消presenter对象对自身的引用，防止内存泄漏
     }
 }
