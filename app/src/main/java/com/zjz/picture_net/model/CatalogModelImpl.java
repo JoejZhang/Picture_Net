@@ -31,7 +31,7 @@ public class CatalogModelImpl implements IComicCatalogContract.Model {
             public void run() {
                 Document doc;
                 try {
-                    ArrayList<ComicCatalogAndUrl> arrayList = new ArrayList<>();
+
                     Connection conn = Jsoup.connect(url);
                     conn.header("User-Agent", HttpUtils.getUserAgentString());
 
@@ -59,6 +59,7 @@ public class CatalogModelImpl implements IComicCatalogContract.Model {
 
                    Elements elements2   =  elements1.select("dd");//列表
 
+                    ArrayList<ComicCatalogAndUrl> arrayList = new ArrayList<>(elements2.size());//根据实际大小创建ArrayList，减少扩容带来的性能消耗
                     for(int i = 0 ; i<elements2.size() ; i++){
                         ComicCatalogAndUrl comicCatalogAndUrl = new ComicCatalogAndUrl();
                         comicCatalogAndUrl.setTitle(elements2.get(i).select("a").first().text());
