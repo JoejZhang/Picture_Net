@@ -40,6 +40,7 @@ public class MainActivity extends BaseActivity implements OnClickRecyclerViewLis
 
     @Override
     protected void initData() {
+        getSwipeBackLayout().setEnableGesture(false);//关闭右滑返回上一级
         mMainPresenter = new MainPresenterImpl(this, this);
 
         mTvMainTitle.setText("看看漫画");

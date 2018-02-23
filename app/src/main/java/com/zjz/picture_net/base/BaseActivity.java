@@ -7,12 +7,13 @@ import android.widget.Toast;
 import com.zjz.picture_net.R;
 
 import butterknife.ButterKnife;
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 /**
  * Created by zjz on 2018/1/25.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends SwipeBackActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

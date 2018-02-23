@@ -19,9 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.ComicCatalogActivity">
+        <activity android:name=".ui.ComicCatalogActivity"
+            android:theme="@style/Theme.SwipeBackActivity">
         </activity>
-        <activity android:name=".ui.ComicContentActivity">
+        <activity android:name=".ui.ComicContentActivity"
+                  android:theme="@style/Theme.SwipeBackActivity">
         </activity>
     </application>
 
