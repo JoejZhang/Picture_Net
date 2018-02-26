@@ -70,7 +70,7 @@ public class ComicContentModelImpl implements IComicContentContract.Model {
                             imgUrlList.add(httpImgUrl);
 
                             num++;
-
+                            Log.e("haha", httpImgUrl + "获取地址" + num);
                             if (imgUrlList.size() == 3) {
 
                                 ArrayList<String> strings = new ArrayList<>();
@@ -78,7 +78,7 @@ public class ComicContentModelImpl implements IComicContentContract.Model {
                                 EventBus.getDefault().post(new ContentListEvent(strings));
                                 imgUrlList.clear();
                             }
-                            Log.e("haha", this.toString() + "获取地址" + num);
+
 
                         }
 
